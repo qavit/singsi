@@ -44,3 +44,7 @@ site/
 .env
 .env.*
 !.env.example
+
+# Storage
+storage/*
+!storage/.gitkeep
