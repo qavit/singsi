@@ -81,7 +81,7 @@ If checks fail:
 
 ### 3. Testing
 
-We use pytest for testing. Tests are organized into three categories:
+We use **[PyTest](https://docs.pytest.org/en/stable/)** for testing. Tests are organized into three categories:
 
 - **Unit Tests**: Testing individual components
 - **Integration Tests**: Testing component interactions
@@ -129,7 +129,7 @@ def test_api():
 
 ### 4. Database Management
 
-We use Alembic for database migrations:
+We use **[Alembic](https://alembic.sqlalchemy.org/en/latest/)** for database migrations:
 
 ```bash
 # Create new migration
@@ -143,7 +143,7 @@ alembic downgrade -1                # Rollback last migration
 
 ## Branch Strategy
 
-We follow GitHub Flow:
+We follow **[GitHub Flow](https://docs.github.com/en/get-started/using-github/github-flow)**:
 
 1. Branch from `develop`:
 ```bash
