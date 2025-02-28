@@ -1,0 +1,9 @@
+[flake8]
+max-line-length = 88
+extend-ignore = E203
+exclude = .git,__pycache__,build,dist,.venv,*.egg-info
+per-file-ignores =
+    # Ignore missing docstrings in __init__ files
+    __init__.py:D104
+    # Ignore invalid import position in settings
+    app/core/config.py:E402
