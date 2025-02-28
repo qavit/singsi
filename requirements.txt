@@ -8,16 +8,16 @@ pydantic-settings>=2.8.1
 # Database Related
 SQLAlchemy>=2.0.38
 alembic>=1.14.1
-psycopg2-binary>=2.9.0
+# psycopg2-binary>=2.9.0
 
 # Authentication and Security
-python-jose[cryptography]>=3.3.0
-passlib[bcrypt]>=1.7.4
+# python-jose[cryptography]>=3.3.0
+# passlib[bcrypt]>=1.7.4
 python-dotenv>=0.19.0
 
 # Asynchronous Task Processing
-celery>=5.1.0
-redis>=3.5.0
+# celery>=5.1.0
+# redis>=3.5.0
 
 # AI and Machine Learning
 # numpy>=1.20.0
@@ -29,5 +29,5 @@ redis>=3.5.0
 # matplotlib>=3.4.0
 
 # Logging and Monitoring
-loguru>=0.5.0
-prometheus-client>=0.11.0
+# loguru>=0.5.0
+# prometheus-client>=0.11.0
