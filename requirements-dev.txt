@@ -1,16 +1,16 @@
-# Code formatting (replaced by Ruff)
+# Code formatting (all replaceable by Ruff)
 # black>=25.1.0
 # isort>=6.0.1
 # flake8>=7.1.2
 # mypy>=1.15.0
 
 # Testing
-pytest>=7.4.3
-# pytest-cov>=4.1.0
-# pytest-asyncio>=0.23.3
+pytest>=8.3.4
+pytest-asyncio>=0.25.3  # For async test support
+pytest-cov>=6.0.0      # For coverage reports
 
 # Development tools
-ruff>=0.9.9
+ruff>=0.1.6
 pre-commit>=4.1.0
 ipython>=8.32.0
 

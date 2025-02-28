@@ -1,17 +1,52 @@
-import secrets
-from typing import Any, ClassVar
+from typing import ClassVar
 
-from pydantic import AnyHttpUrl, Field, PostgresDsn
+from pydantic import AnyHttpUrl, Field, PostgresDsn, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    # App Settings
+    APP_ENV: str = 'development'
+    DEBUG: bool = True
+    SECRET_KEY: str = Field(default_factory=lambda: 'dev-secret-key')
     API_V1_STR: str = '/api/v1'
-    SECRET_KEY: str = Field(default_factory=lambda: secrets.token_urlsafe(32))
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8  # 8 days
 
-    # CORS allowed origins
+    # AI Settings
+    OPENAI_API_KEY: SecretStr
+    OPENAI_ORG_ID: str | None = None
+    DEFAULT_AI_PROVIDER: str = 'openai'
+    DEFAULT_AI_MODEL: str = 'gpt-4'
+
+    # CORS
     BACKEND_CORS_ORIGINS: ClassVar[list[AnyHttpUrl]] = []
+
+    # Database
+    POSTGRES_SERVER: str = 'localhost'
+    POSTGRES_USER: str = 'postgres'
+    POSTGRES_PASSWORD: str = 'postgres'
+    POSTGRES_DB: str = 'app'
+    POSTGRES_PORT: str = '5432'
+    SQLALCHEMY_DATABASE_URI: PostgresDsn | None = None
+
+    # Redis
+    REDIS_HOST: str = 'localhost'
+    REDIS_PORT: int = 6379
+    REDIS_PASSWORD: str | None = None
+    REDIS_DB: int = 0
+
+    # Storage
+    STORAGE_PROVIDER: str = 'local'
+    STORAGE_ROOT: str = '/tmp/singsi/storage'
+    AWS_ACCESS_KEY_ID: str | None = None
+    AWS_SECRET_ACCESS_KEY: SecretStr | None = None
+    AWS_REGION: str | None = None
+    S3_BUCKET: str | None = None
+
+    # Security
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 24 hours
+
+    # Rate Limiting
+    RATE_LIMIT_PER_MINUTE: int = 60
 
     @classmethod
     def parse_cors_origins(cls, v: str | list[str]) -> list[str] | str:
@@ -21,35 +56,9 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
-    # Database settings
-    POSTGRES_SERVER: str = 'localhost'
-    POSTGRES_USER: str = 'postgres'
-    POSTGRES_PASSWORD: str = 'postgres'
-    POSTGRES_DB: str = 'app'
-    SQLALCHEMY_DATABASE_URI: PostgresDsn | None = None
-
-    @classmethod
-    def build_db_uri(cls, values: dict[str, Any]) -> str | None:
-        if isinstance(values.get('SQLALCHEMY_DATABASE_URI'), str):
-            return values['SQLALCHEMY_DATABASE_URI']
-        return str(
-            PostgresDsn.build(
-                scheme='postgresql',
-                username=values.get('POSTGRES_USER'),
-                password=values.get('POSTGRES_PASSWORD'),
-                host=values.get('POSTGRES_SERVER', ''),
-                path=f'/{values.get("POSTGRES_DB", "")}',
-            )
-        )
-
-    # AI model configuration
-    AI_MODEL_PATH: str = 'models/ai_model'
-
-    # Redis configuration (for async tasks)
-    REDIS_HOST: str = 'localhost'
-    REDIS_PORT: int = 6379
-
-    model_config = SettingsConfigDict(case_sensitive=True, env_file='.env')
+    model_config = SettingsConfigDict(
+        case_sensitive=True, env_file='.env', extra='ignore'
+    )
 
 
 settings = Settings()

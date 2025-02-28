@@ -1,12 +1,14 @@
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
-addopts = "-v --cov=app --cov-report=term-missing"
+addopts = "-v"  # Remove coverage options from default
+pythonpath = "."
 
 [tool.ruff]
 target-version = "py312"
 line-length = 88
 extend-exclude = ["migrations", ".venv"]
+ignore = ["RUF001"]  # Ignore Chinese full-width punctuation warnings
 
 [tool.ruff.format]
 quote-style = "single"
