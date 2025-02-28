@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SingSi.AI - AI-powered Teaching Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>SingSi.AI Backend</h1>
+        <p class="subtitle">An AI-powered teaching assistant that helps educators create, manage, and analyze teaching materials</p>
+        
+        <div class="btn-container">
+            <a href="/docs" class="btn btn-primary">Swagger UI Documentation</a>
+            <a href="/redoc" class="btn btn-secondary">ReDoc Documentation</a>
+        </div>
+        
+        <div class="feature-section">
+            <h2>Platform Features</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>Document Management <span class="feature-status status-completed">Completed</span></h3>
+                    <p>Upload, download, and manage teaching documents with support for PDF, Word, text, and image formats</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Database Integration <span class="feature-status status-completed">Completed</span></h3>
+                    <p>Robust database system for storing document metadata and user information with PostgreSQL</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Open API <span class="feature-status status-completed">Completed</span></h3>
+                    <p>Comprehensive RESTful API with interactive documentation for easy integration with other systems</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="feature-section">
+            <h2>AI Capabilities</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>Text Analysis <span class="feature-status status-in-progress">In Progress</span></h3>
+                    <p>Process and analyze text content to extract key topics, difficulty levels, and suggested improvements</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Document Summarization <span class="feature-status status-in-progress">In Progress</span></h3>
+                    <p>Generate concise summaries of teaching materials to help teachers quickly understand content</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Question Generation <span class="feature-status status-planned">Planned</span></h3>
+                    <p>Automatically generate quiz questions from teaching materials with various difficulty levels</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Knowledge Graph <span class="feature-status status-planned">Planned</span></h3>
+                    <p>Build relationships between concepts and materials to create a comprehensive knowledge network</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="feature-section">
+            <h2>Educational Tools</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>Lesson Plan Generator <span class="feature-status status-planned">Planned</span></h3>
+                    <p>AI-powered creation of lesson plans from uploaded teaching materials with customizable templates</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Assessment Builder <span class="feature-status status-planned">Planned</span></h3>
+                    <p>Create quizzes and tests with multiple question types and automatic difficulty calibration</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Automated Grading <span class="feature-status status-planned">Planned</span></h3>
+                    <p>AI-powered evaluation of student submissions with detailed feedback and improvement suggestions</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="feature-section">
+            <h2>Future Roadmap</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>User Authentication <span class="feature-status status-planned">Planned</span></h3>
+                    <p>Secure user authentication and authorization system with role-based access control</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Learning Analytics <span class="feature-status status-planned">Planned</span></h3>
+                    <p>Comprehensive dashboards to track student progress and identify areas needing improvement</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Adaptive Learning <span class="feature-status status-planned">Planned</span></h3>
+                    <p>Personalized learning recommendations and dynamic difficulty adjustment based on student performance</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Content Versioning <span class="feature-status status-planned">Planned</span></h3>
+                    <p>Track changes to educational materials over time and manage different versions efficiently</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2024 SingSi.AI | Powered by FastAPI</p>
+    </footer>
+</body>
+</html>
