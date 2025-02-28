@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.ai_services import router as ai_router
 
 app = FastAPI(
-    title='SingSi AI Backend',
+    title='SingSi.AI Backend',
     description='Backend for AI Web Application',
     version='0.1.0',
 )
@@ -24,7 +24,7 @@ app.add_middleware(
 
 @app.get('/')
 async def root() -> dict[str, str]:
-    return {'message': 'Welcome to SingSi AI Backend'}
+    return {'message': 'Welcome to SingSi.AI Backend'}
 
 
 @app.get('/health')

@@ -1,1 +1,1 @@
-"""SingSi AI Backend application package."""
+"""SingSi.AI Backend application package."""

@@ -1,4 +1,4 @@
-# SingSi AI Backend
+# SingSi.AI Backend
 
 ## Introduction
 
@@ -122,4 +122,4 @@ git checkout -b feature/your-feature-name
 
 ## Directory Structure
 
-See [project_structure.md](project_structure.md)
+See [project_structure.md](docs/project_structure.md)
