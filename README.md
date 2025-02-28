@@ -51,10 +51,10 @@ Please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of
 
 ## Documentation
 
-- [Product Requirements Document](docs/PRD.md)
+- [Product Requirements Document](docs/PRD_en.md) ([中文版](docs/PRD_zh_TW.md))
 - [Project Structure](docs/project_structure.md)
-- [API Documentation](docs/api.md)
+- ~~[API Documentation](docs/api.md)~~
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
