@@ -1,6 +1,7 @@
+from pathlib import Path
 from typing import ClassVar
 
-from pydantic import AnyHttpUrl, Field, PostgresDsn, SecretStr
+from pydantic import AnyHttpUrl, Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -26,7 +27,11 @@ class Settings(BaseSettings):
     POSTGRES_PASSWORD: str = 'postgres'
     POSTGRES_DB: str = 'app'
     POSTGRES_PORT: str = '5432'
-    SQLALCHEMY_DATABASE_URI: PostgresDsn | None = None
+
+    @property
+    def SQLALCHEMY_DATABASE_URI(self) -> str:
+        """Get async database URI."""
+        return f'postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}'
 
     # Redis
     REDIS_HOST: str = 'localhost'
@@ -36,7 +41,7 @@ class Settings(BaseSettings):
 
     # Storage
     STORAGE_PROVIDER: str = 'local'
-    STORAGE_ROOT: str = '/tmp/singsi/storage'
+    STORAGE_ROOT: str = str(Path(__file__).parent.parent.parent / 'storage')
     AWS_ACCESS_KEY_ID: str | None = None
     AWS_SECRET_ACCESS_KEY: SecretStr | None = None
     AWS_REGION: str | None = None

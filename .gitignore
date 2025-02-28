@@ -4,7 +4,6 @@ __pycache__/
 *$py.class
 *.so
 .Python
-.env
 .venv
 venv/
 ENV/
@@ -44,3 +43,7 @@ site/
 .env
 .env.*
 !.env.example
+
+# Storage
+storage/*
+!storage/.gitkeep
