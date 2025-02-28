@@ -81,22 +81,50 @@ If checks fail:
 
 ### 3. Testing
 
-We use pytest for testing:
+We use pytest for testing. Tests are organized into three categories:
+
+- **Unit Tests**: Testing individual components
+- **Integration Tests**: Testing component interactions
+- **Functional Tests**: Testing API endpoints
 
 ```bash
-# Basic test commands
-pytest                     # Run all tests
-pytest path/to/test.py    # Test specific file
-pytest -v                 # Verbose output
+# Run specific test categories
+pytest tests/unit -v         # Run unit tests
+pytest tests/integration -v  # Run integration tests
+pytest tests/functional -v   # Run functional tests
 
-# Advanced testing
-pytest -k "pattern"       # Run tests matching pattern
-pytest -vv               # Extra verbose (show locals)
-pytest -n auto          # Parallel testing
+# Run tests by markers
+pytest -v -m unit        # Run all unit tests
+pytest -v -m integration # Run all integration tests
+pytest -v -m functional  # Run all functional tests
 
-# Coverage reports
-pytest --cov=app --cov-report=term-missing  # Terminal report
-pytest --cov=app --cov-report=html         # HTML report
+# Run all tests
+pytest -v
+
+# Run with coverage report
+pytest -v --cov=app --cov-report=term-missing
+
+# Run specific test file
+pytest tests/unit/services/test_document_service.py -v
+
+# Run tests matching a pattern
+pytest -v -k "document"  # Run all tests with "document" in the name
+```
+
+Test files should use appropriate markers:
+```python
+@pytest.mark.unit
+@pytest.mark.asyncio
+async def test_something():
+    # ...
+
+@pytest.mark.integration
+def test_integration():
+    # ...
+
+@pytest.mark.functional
+def test_api():
+    # ...
 ```
 
 ### 4. Database Management

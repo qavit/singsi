@@ -1,7 +1,18 @@
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = [
+    "tests/unit",
+    "tests/integration",
+    "tests/functional"
+]
 python_files = ["test_*.py"]
 addopts = "-v --cov=app --cov-report=term-missing"
+markers = [
+    "unit: marks unit tests",
+    "integration: marks integration tests",
+    "functional: marks functional/API tests",
+]
+asyncio_mode = "strict"
+pythonpath = "."
 
 [tool.ruff]
 target-version = "py312"
