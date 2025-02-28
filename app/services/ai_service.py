@@ -109,9 +109,7 @@ class AIService:
             raise Exception(f"External API call failed: {str(e)}")
 
     async def process_text(
-        self,
-        text: str,
-        options: Optional[Dict[str, Any]] = None
+        self, text: str, options: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """
         Process text input using AI models.
@@ -166,9 +164,7 @@ class AIService:
             }
 
     async def generate_image(
-        self,
-        prompt: str,
-        options: Optional[Dict[str, Any]] = None
+        self, prompt: str, options: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """
         Generate images from text prompts.
