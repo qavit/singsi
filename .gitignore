@@ -16,7 +16,6 @@ ENV/
 *.swo
 
 # Project specific
-models/
 logs/
 .coverage
 htmlcov/
@@ -29,12 +28,6 @@ htmlcov/
 # System
 .DS_Store
 Thumbs.db
-
-# Coverage reports
-coverage.xml
-
-# MyPy
-.mypy_cache/
 
 # Development
 .pytest_cache/

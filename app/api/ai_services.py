@@ -1,6 +1,6 @@
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, UploadFile
+from fastapi import APIRouter, HTTPException, UploadFile, status
 from pydantic import BaseModel
 
 from app.services.ai_service import ai_service
@@ -26,7 +26,8 @@ async def process_text(request: TextProcessingRequest) -> dict[str, Any]:
         return result
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail=f'AI processing failed: {e!s}'
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f'AI processing failed: {e!s}',
         ) from e
 
 
@@ -34,7 +35,10 @@ async def process_text(request: TextProcessingRequest) -> dict[str, Any]:
 async def process_image(file: UploadFile, options: str = '') -> dict[str, Any]:
     """Process uploaded image file with AI analysis."""
     if not file.content_type or not file.content_type.startswith('image/'):
-        raise HTTPException(status_code=400, detail='Only image files are allowed')
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='Only image files are allowed',
+        )
 
     try:
         content = await file.read()
@@ -46,7 +50,8 @@ async def process_image(file: UploadFile, options: str = '') -> dict[str, Any]:
         }
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail=f'Image processing failed: {e!s}'
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f'Image processing failed: {e!s}',
         ) from e
 
 
@@ -58,7 +63,8 @@ async def generate_image(request: ImageGenerationRequest) -> dict[str, Any]:
         return result
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail=f'Image generation failed: {e!s}'
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f'Image generation failed: {e!s}',
         ) from e
 
 
