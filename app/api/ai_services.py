@@ -1,12 +1,6 @@
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
-from fastapi import (
-    APIRouter,
-    HTTPException,
-    File,
-    UploadFile,
-    Form
-)
+from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel
 
 from app.services.ai_service import ai_service
@@ -25,7 +19,7 @@ class ImageGenerationRequest(BaseModel):
 
 
 @router.post("/process-text")
-async def process_text(request: TextProcessingRequest):
+async def process_text(request: TextProcessingRequest) -> Dict[str, Any]:
     """
     Process text input and return AI-generated response.
 
@@ -42,20 +36,14 @@ async def process_text(request: TextProcessingRequest):
         HTTPException: If text processing fails or AI service is unavailable
     """
     try:
-        result = await ai_service.process_text(
-            request.text,
-            request.options
-        )
+        result = await ai_service.process_text(request.text, request.options)
         return result
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"AI processing failed: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"AI processing failed: {str(e)}")
 
 
 @router.post("/generate-image")
-async def generate_image(request: ImageGenerationRequest):
+async def generate_image(request: ImageGenerationRequest) -> Dict[str, Any]:
     """
     Generate an image based on text prompt.
 
@@ -71,23 +59,18 @@ async def generate_image(request: ImageGenerationRequest):
         HTTPException: If image generation fails or service is unavailable
     """
     try:
-        result = await ai_service.generate_image(
-            request.prompt,
-            request.options
-        )
+        result = await ai_service.generate_image(request.prompt, request.options)
         return result
     except Exception as e:
         raise HTTPException(
-            status_code=500,
-            detail=f"Image generation failed: {str(e)}"
+            status_code=500, detail=f"Image generation failed: {str(e)}"
         )
 
 
 @router.post("/process-image")
 async def process_image(
-    file: UploadFile = File(...),
-    options: str = Form(default="{}")
-):
+    file: UploadFile = File(...), options: str = Form(default="{}")
+) -> Dict[str, Any]:
     """
     Process uploaded image file with AI analysis.
 
@@ -111,28 +94,25 @@ async def process_image(
         content = await file.read()
 
         # Validate file type
-        if not file.content_type.startswith('image/'):
-            raise HTTPException(
-                status_code=400,
-                detail="Only image files are allowed"
-            )
+        content_type = file.content_type or ""
+        if not content_type.startswith("image/"):
+            raise HTTPException(status_code=400, detail="Only image files are allowed")
 
         return {
             "filename": file.filename,
             "content_type": file.content_type,
             "size": len(content),
-            "status": "processed"
+            "status": "processed",
         }
 
     except Exception as e:
         raise HTTPException(
-            status_code=500,
-            detail=f"Image processing failed: {str(e)}"
+            status_code=500, detail=f"Image processing failed: {str(e)}"
         )
 
 
 @router.get("/status")
-async def check_ai_status():
+async def check_ai_status() -> Dict[str, Any]:
     """
     Check the current status of AI service and model.
 

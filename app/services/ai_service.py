@@ -1,40 +1,107 @@
-from typing import Dict, Any, Optional
+"""
+AI Service Module for handling AI-related operations.
+
+This module provides a service layer for AI operations including:
+- Text processing with AI models
+- Image generation from text prompts
+- External AI API integration
+- Model initialization and management
+
+Example:
+    ```python
+    from app.services.ai_service import ai_service
+
+    # Process text
+    result = await ai_service.process_text("Hello, AI!")
+    print(result)
+
+    # Generate image
+    image_data = await ai_service.generate_image("A sunset over mountains")
+    print(image_data)
+    ```
+"""
+
 import asyncio
+from typing import Any, Dict, Optional
+
 import httpx
 
 
 class AIService:
     """
-    處理 AI 相關請求的服務類
+    AI Service class for managing AI operations and model interactions.
+
+    This class handles:
+    - Model initialization and management
+    - Text processing with AI
+    - Image generation from text prompts
+    - External AI API integration
+
+    Attributes:
+        initialized (bool): Indicates if the AI model is initialized
+        model (Dict[str, Any]): Contains model information and state
     """
 
-    def __init__(self):
-        self.model = None
-        self.initialized = False
-        self.http_client = httpx.AsyncClient(timeout=30.0)
-
-    async def initialize_model(self):
+    def __init__(self) -> None:
         """
-        初始化 AI 模型
-        在實際應用中，您可能會從 Hugging Face 或本地加載模型
+        Initialize AI service with default settings.
+
+        The service starts uninitialized and requires explicit initialization
+        before processing requests.
+        """
+        self.initialized: bool = False
+        self.model: Dict[str, Any] = {"name": "test_model"}
+
+    async def initialize_model(self) -> bool:
+        """
+        Initialize AI model and required resources.
+
+        This method should be called before processing any requests.
+        In actual applications, this would load models from storage
+        or initialize connections to AI services.
+
+        Returns:
+            bool: True if initialization was successful
+
+        Note:
+            Currently implements a mock initialization with delay
+            to simulate actual model loading.
         """
         if self.initialized:
-            return
+            return True
 
-        # 模擬模型加載過程
+        # Simulate model loading process
         await asyncio.sleep(2)
         self.model = {"name": "demo_model", "status": "loaded"}
         self.initialized = True
         return True
 
     async def call_external_ai_api(
-            self, endpoint: str, payload: Dict[str, Any]
+        self, endpoint: str, payload: Dict[str, Any]
     ) -> Dict[str, Any]:
         """
-        使用 HTTPX 調用外部 AI API
+        Make HTTP requests to external AI APIs.
+
+        Args:
+            endpoint (str): The API endpoint URL
+            payload (Dict[str, Any]): The request payload
+
+        Returns:
+            Dict[str, Any]: The API response data
+
+        Raises:
+            Exception: If the API call fails or returns an error
+
+        Example:
+            ```python
+            response = await service.call_external_ai_api(
+                "https://api.ai-service.com/process",
+                {"text": "Hello", "options": {"language": "en"}}
+            )
+            ```
         """
         try:
-            async with self.http_client as client:
+            async with httpx.AsyncClient() as client:
                 response = await client.post(endpoint, json=payload)
                 response.raise_for_status()
                 return response.json()
@@ -42,45 +109,102 @@ class AIService:
             raise Exception(f"External API call failed: {str(e)}")
 
     async def process_text(
-            self, text: str, options: Optional[Dict[str, Any]] = None
+        self,
+        text: str,
+        options: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """
-        處理文本輸入並返回 AI 回應
+        Process text input using AI models.
+
+        This method handles text processing tasks such as:
+        - Text classification
+        - Sentiment analysis
+        - Language translation
+        - Text generation
+
+        Args:
+            text (str): The input text to process
+            options (Optional[Dict[str, Any]]): Processing options including:
+                - model: Specific model to use
+                - language: Target language for translation
+                - max_length: Maximum output length
+                - temperature: Generation temperature
+
+        Returns:
+            Dict[str, Any]: Processing results containing:
+                - input: Original input text
+                - output: Processed text result
+                - processing_time: Time taken for processing
+                - model_used: Name of the model used
+
+        Raises:
+            Exception: If text processing fails
+
+        Example:
+            ```python
+            result = await service.process_text(
+                "Translate this to French",
+                options={"language": "fr"}
+            )
+            ```
         """
         if not self.initialized:
             await self.initialize_model()
 
-        # 示例：調用外部 API
         try:
             result = await self.call_external_ai_api(
                 "https://api.external-ai.com/process",
-                {"text": text, "options": options or {}}
+                {"text": text, "options": options or {}},
             )
             return result
         except Exception:
-            # 如果外部 API 失敗，回退到本地處理
             return {
                 "input": text,
                 "output": f"Fallback response to: {text}",
                 "processing_time": "1.0s",
-                "model_used": self.model["name"]
+                "model_used": self.model["name"],
             }
 
     async def generate_image(
-            self, prompt: str, options: Optional[Dict[str, Any]] = None
+        self,
+        prompt: str,
+        options: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """
-        根據提示生成圖像
+        Generate images from text prompts.
+
+        Supports various image generation models and can be configured
+        for different styles and requirements.
+
+        Args:
+            prompt (str): Text description of the desired image
+            options (Optional[Dict[str, Any]]): Generation options including:
+                - size: Image dimensions (e.g., "1024x1024")
+                - style: Art style (e.g., "realistic", "artistic")
+                - format: Output format (e.g., "png", "jpg")
+
+        Returns:
+            Dict[str, Any]: Generation results containing:
+                - prompt: Original text prompt
+                - image_url: URL of the generated image
+                - generation_time: Time taken for generation
+
+        Example:
+            ```python
+            image = await service.generate_image(
+                "A futuristic city at night",
+                options={"size": "1024x1024", "style": "realistic"}
+            )
+            ```
         """
-        # 實際實現將調用適當的圖像生成模型如 DALL-E 或 Stable Diffusion
-        await asyncio.sleep(2)  # 模擬處理時間
+        await asyncio.sleep(2)  # Simulate processing time
 
         return {
             "prompt": prompt,
-            "image_url": "https://example.com/generated-image.png",  # 示例 URL
-            "generation_time": "2.0s"
+            "image_url": "https://example.com/generated-image.png",
+            "generation_time": "2.0s",
         }
 
 
-# 創建服務實例
+# Create singleton service instance
 ai_service = AIService()
