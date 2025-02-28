@@ -1,25 +1,25 @@
-from typing import Any, Dict, Optional
+from typing import Any
 
-from fastapi import APIRouter, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, File, HTTPException, UploadFile
 from pydantic import BaseModel
 
 from app.services.ai_service import ai_service
 
-router = APIRouter(prefix="/ai", tags=["ai"])
+router = APIRouter(prefix='/ai', tags=['ai'])
 
 
 class TextProcessingRequest(BaseModel):
     text: str
-    options: Optional[Dict[str, Any]] = None
+    options: dict[str, Any] | None = None
 
 
 class ImageGenerationRequest(BaseModel):
     prompt: str
-    options: Optional[Dict[str, Any]] = None
+    options: dict[str, Any] | None = None
 
 
-@router.post("/process-text")
-async def process_text(request: TextProcessingRequest) -> Dict[str, Any]:
+@router.post('/process-text')
+async def process_text(request: TextProcessingRequest) -> dict[str, Any]:
     """
     Process text input and return AI-generated response.
 
@@ -39,11 +39,13 @@ async def process_text(request: TextProcessingRequest) -> Dict[str, Any]:
         result = await ai_service.process_text(request.text, request.options)
         return result
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"AI processing failed: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f'AI processing failed: {e!s}'
+        ) from e
 
 
-@router.post("/generate-image")
-async def generate_image(request: ImageGenerationRequest) -> Dict[str, Any]:
+@router.post('/generate-image')
+async def generate_image(request: ImageGenerationRequest) -> dict[str, Any]:
     """
     Generate an image based on text prompt.
 
@@ -63,14 +65,15 @@ async def generate_image(request: ImageGenerationRequest) -> Dict[str, Any]:
         return result
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail=f"Image generation failed: {str(e)}"
-        )
+            status_code=500, detail=f'Image generation failed: {e!s}'
+        ) from e
 
 
-@router.post("/process-image")
+@router.post('/process-image')
 async def process_image(
-    file: UploadFile = File(...), options: str = Form(default="{}")
-) -> Dict[str, Any]:
+    file: UploadFile,  # 移除預設值
+    options: str = '',  # 簡化預設值
+) -> dict[str, Any]:
     """
     Process uploaded image file with AI analysis.
 
@@ -89,30 +92,35 @@ async def process_image(
     Raises:
         HTTPException: If file is not an image or processing fails
     """
+    if not file:
+        file = File(...)
+    if not options:
+        options = '{}'
+
     try:
         # Read uploaded file content
         content = await file.read()
 
         # Validate file type
-        content_type = file.content_type or ""
-        if not content_type.startswith("image/"):
-            raise HTTPException(status_code=400, detail="Only image files are allowed")
+        content_type = file.content_type or ''
+        if not content_type.startswith('image/'):
+            raise HTTPException(status_code=400, detail='Only image files are allowed')
 
         return {
-            "filename": file.filename,
-            "content_type": file.content_type,
-            "size": len(content),
-            "status": "processed",
+            'filename': file.filename,
+            'content_type': file.content_type,
+            'size': len(content),
+            'status': 'processed',
         }
 
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail=f"Image processing failed: {str(e)}"
-        )
+            status_code=500, detail=f'Image processing failed: {e!s}'
+        ) from e
 
 
-@router.get("/status")
-async def check_ai_status() -> Dict[str, Any]:
+@router.get('/status')
+async def check_ai_status() -> dict[str, Any]:
     """
     Check the current status of AI service and model.
 
@@ -125,5 +133,5 @@ async def check_ai_status() -> Dict[str, Any]:
         This endpoint is useful for health checks and service monitoring
     """
     if not ai_service.initialized:
-        return {"status": "not_initialized"}
-    return {"status": "ready", "model": ai_service.model["name"]}
+        return {'status': 'not_initialized'}
+    return {'status': 'ready', 'model': ai_service.model['name']}

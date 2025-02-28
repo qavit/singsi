@@ -22,7 +22,7 @@ Example:
 """
 
 import asyncio
-from typing import Any, Dict, Optional
+from typing import Any
 
 import httpx
 
@@ -50,7 +50,7 @@ class AIService:
         before processing requests.
         """
         self.initialized: bool = False
-        self.model: Dict[str, Any] = {"name": "test_model"}
+        self.model: dict[str, Any] = {'name': 'test_model'}
 
     async def initialize_model(self) -> bool:
         """
@@ -72,13 +72,13 @@ class AIService:
 
         # Simulate model loading process
         await asyncio.sleep(2)
-        self.model = {"name": "demo_model", "status": "loaded"}
+        self.model = {'name': 'demo_model', 'status': 'loaded'}
         self.initialized = True
         return True
 
     async def call_external_ai_api(
-        self, endpoint: str, payload: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, endpoint: str, payload: dict[str, Any]
+    ) -> dict[str, Any]:
         """
         Make HTTP requests to external AI APIs.
 
@@ -106,11 +106,11 @@ class AIService:
                 response.raise_for_status()
                 return response.json()
         except httpx.HTTPError as e:
-            raise Exception(f"External API call failed: {str(e)}")
+            raise Exception(f'External API call failed: {e!s}') from e
 
     async def process_text(
-        self, text: str, options: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+        self, text: str, options: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         """
         Process text input using AI models.
 
@@ -151,21 +151,21 @@ class AIService:
 
         try:
             result = await self.call_external_ai_api(
-                "https://api.external-ai.com/process",
-                {"text": text, "options": options or {}},
+                'https://api.external-ai.com/process',
+                {'text': text, 'options': options or {}},
             )
             return result
         except Exception:
             return {
-                "input": text,
-                "output": f"Fallback response to: {text}",
-                "processing_time": "1.0s",
-                "model_used": self.model["name"],
+                'input': text,
+                'output': f'Fallback response to: {text}',
+                'processing_time': '1.0s',
+                'model_used': self.model['name'],
             }
 
     async def generate_image(
-        self, prompt: str, options: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+        self, prompt: str, options: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         """
         Generate images from text prompts.
 
@@ -196,9 +196,9 @@ class AIService:
         await asyncio.sleep(2)  # Simulate processing time
 
         return {
-            "prompt": prompt,
-            "image_url": "https://example.com/generated-image.png",
-            "generation_time": "2.0s",
+            'prompt': prompt,
+            'image_url': 'https://example.com/generated-image.png',
+            'generation_time': '2.0s',
         }
 
 

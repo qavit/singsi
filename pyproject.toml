@@ -1,46 +1,30 @@
-[tool.black]
-line-length = 88
-target-version = ['py312']
-include = '\.pyi?$'
-
-[tool.isort]
-profile = "black"
-multi_line_output = 3
-line_length = 88
-
-[tool.mypy]
-python_version = "3.12"
-# Reduce strictness for better development experience
-disallow_untyped_defs = false      # Allow functions without type definitions
-check_untyped_defs = false         # Skip checking functions without type hints
-warn_return_any = false            # Allow returning Any type
-warn_unused_configs = true
-
-# Ignore specific directories
-exclude = [
-    'tests/',
-    'migrations/',
-    '.venv/'
-]
-
-# Base configuration
-plugins = ["pydantic.mypy"]
-namespace_packages = true
-explicit_package_bases = true
-mypy_path = "."
-
-# Ignore type checking for third-party libraries
-[[tool.mypy.overrides]]
-module = [
-    "celery.*",
-    "redis.*",
-    "fastapi.*",
-    "pydantic.*",
-    "sqlalchemy.*"
-]
-ignore_missing_imports = true
-
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 addopts = "-v --cov=app --cov-report=term-missing"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+extend-exclude = ["migrations", ".venv"]
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "F",    # Pyflakes
+    "I",    # isort
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "C90",  # mccabe complexity
+    "PL",   # pylint
+    "RUF",  # ruff-specific rules
+]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+force-wrap-aliases = true
