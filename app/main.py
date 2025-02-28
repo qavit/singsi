@@ -1,11 +1,14 @@
+from typing import Dict
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 from app.api.ai_services import router as ai_router
 
 app = FastAPI(
     title="SingSi AI Backend",
     description="Backend for AI Web Application",
-    version="0.1.0"
+    version="0.1.0",
 )
 
 # Add AI service routes (after CORS setup)
@@ -22,15 +25,16 @@ app.add_middleware(
 
 
 @app.get("/")
-async def root():
+async def root() -> Dict[str, str]:
     return {"message": "Welcome to SingSi AI Backend"}
 
 
 @app.get("/health")
-async def health_check():
+async def health_check() -> Dict[str, str]:
     return {"status": "healthy"}
 
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)
