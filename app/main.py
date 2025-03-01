@@ -6,8 +6,8 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from app.api.ai_services import router as ai_router
-from app.api.document import router as document_router
+from app.api.ai_api import router as ai_router
+from app.api.document_api import router as document_router
 from app.core.config import settings
 
 # Define paths

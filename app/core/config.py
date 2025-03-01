@@ -13,10 +13,10 @@ class Settings(BaseSettings):
     API_V1_STR: str = '/api/v1'
 
     # AI Settings
+    DEFAULT_AI_PROVIDER: str = 'openai'
     OPENAI_API_KEY: SecretStr
     OPENAI_ORG_ID: str | None = None
-    DEFAULT_AI_PROVIDER: str = 'openai'
-    DEFAULT_AI_MODEL: str = 'gpt-4'
+    OPENAI_DEFAULT_MODEL: str = 'gpt-4o-mini'
 
     # CORS
     BACKEND_CORS_ORIGINS: ClassVar[list[AnyHttpUrl]] = []
@@ -31,7 +31,12 @@ class Settings(BaseSettings):
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> str:
         """Get async database URI."""
-        return f'postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}'
+        user = self.POSTGRES_USER
+        password = self.POSTGRES_PASSWORD
+        server = self.POSTGRES_SERVER
+        port = self.POSTGRES_PORT
+        db = self.POSTGRES_DB
+        return f'postgresql+asyncpg://{user}:{password}@{server}:{port}/{db}'
 
     # Redis
     REDIS_HOST: str = 'localhost'
