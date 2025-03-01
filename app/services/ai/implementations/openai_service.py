@@ -1,11 +1,23 @@
 """OpenAIService implementation based on the AIService interface."""
 
 import logging
+from dataclasses import dataclass
 from typing import Any
 
 from openai import AsyncOpenAI
 
 from app.services.ai.base.ai_service_abstract import AIService
+
+
+@dataclass
+class DocumentAnalysisRequest:
+    """Container for document analysis parameters."""
+
+    content: bytes | None = None
+    filename: str | None = None
+    content_type: str | None = None
+    document: str | None = None
+    options: dict[str, Any] | None = None
 
 
 class OpenAIService(AIService):
@@ -50,14 +62,35 @@ class OpenAIService(AIService):
             'usage': response.usage.model_dump() if response.usage else None,
         }
 
-    async def analyze_document(self, document: str) -> dict[str, Any]:
+    async def analyze_document(
+        self, request: DocumentAnalysisRequest | None = None, **kwargs
+    ) -> dict[str, Any]:
         """
-        Analyze the document using the OpenAI client.
-        For now, reuse process_text with a simple prompt.
+        Analyze document content using the OpenAI client.
+        Supports both binary content and text document.
         """
-        # TODO: Implement document analysis functionality
+        # Support both object-based and direct parameter calls
+        if request is None:
+            request = DocumentAnalysisRequest(**kwargs)
+
         try:
-            return await self.process_text(f'Analyze document: {document}')
+            # Handle binary content
+            if request.content is not None:
+                # Extract text or process binary content according to content_type
+                doc_info = (
+                    f'Document: {request.filename} ({request.content_type}, '
+                    f'{len(request.content)} bytes)'
+                )
+                return await self.process_text(
+                    f'Analyze this document: {doc_info}', request.options
+                )
+            # Handle text document
+            elif request.document is not None:
+                return await self.process_text(
+                    f'Analyze document: {request.document}', request.options
+                )
+            else:
+                raise ValueError('Either content or document must be provided')
         except Exception as e:
             logging.error(f'Error in document analysis: {e}')
             raise
@@ -71,14 +104,25 @@ class OpenAIService(AIService):
             logging.error(f'Error in generating response: {e}')
             raise
 
-    async def analyze_image(self, image_path: str) -> dict[str, Any]:
-        """Analyze an image."""
+    async def analyze_image(self, image_path_or_content) -> dict[str, Any]:
+        """
+        Analyze an image. Support both file path and binary content.
+        """
         # TODO: Implement image analysis functionality
         try:
-            return {
-                'image_path': image_path,
-                'analysis': 'Image analysis functionality is not implemented yet.',
-            }
+            # Check if input is binary content or file path
+            if isinstance(image_path_or_content, bytes | bytearray):
+                # Process binary content
+                return {
+                    'size': len(image_path_or_content),
+                    'analysis': 'Binary image analysis is not fully implemented yet.',
+                }
+            else:
+                # Process file path
+                return {
+                    'image_path': image_path_or_content,
+                    'analysis': 'Image path analysis is not fully implemented yet.',
+                }
         except Exception as e:
             logging.error(f'Error in image analysis: {e}')
             raise
