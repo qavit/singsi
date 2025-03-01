@@ -13,10 +13,10 @@ class Settings(BaseSettings):
     API_V1_STR: str = '/api/v1'
 
     # AI Settings
+    DEFAULT_AI_PROVIDER: str = 'openai'
     OPENAI_API_KEY: SecretStr
     OPENAI_ORG_ID: str | None = None
-    DEFAULT_AI_PROVIDER: str = 'openai'
-    DEFAULT_AI_MODEL: str = 'gpt-4'
+    OPENAI_DEFAULT_MODEL: str = 'gpt-4o-mini'
 
     # CORS
     BACKEND_CORS_ORIGINS: ClassVar[list[AnyHttpUrl]] = []
