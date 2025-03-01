@@ -31,7 +31,12 @@ class Settings(BaseSettings):
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> str:
         """Get async database URI."""
-        return f'postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}'
+        user = self.POSTGRES_USER
+        password = self.POSTGRES_PASSWORD
+        server = self.POSTGRES_SERVER
+        port = self.POSTGRES_PORT
+        db = self.POSTGRES_DB
+        return f'postgresql+asyncpg://{user}:{password}@{server}:{port}/{db}'
 
     # Redis
     REDIS_HOST: str = 'localhost'
