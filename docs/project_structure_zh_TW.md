@@ -58,6 +58,13 @@
 - **配置管理**：集中在 `app/core/config.py`，使用 Pydantic 設定
 - **API 層**：RESTful 端點定義於 `app/api/` 目錄
 - **範例**：在 `app/examples/` 中有示範程式碼展示使用模式
+- **工具函數**：位於 `app/utils/` 的通用輔助模組：
+  - `prompts.py` - AI 提示詞模板與管理
+  - `file_utils.py` - 檔案處理與操作工具
+  - `date_utils.py` - 日期時間處理與格式化
+  - `serializers.py` - 資料轉換與序列化工具
+  - `constants.py` - 共用常數與設定
+  - `response_utils.py` - API 回應格式標準化
 
 ## 架構說明
 

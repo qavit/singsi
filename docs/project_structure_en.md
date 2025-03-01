@@ -58,6 +58,13 @@
 - **Configuration Management**: Centralized in `app/core/config.py` using Pydantic settings
 - **API Layer**: RESTful endpoints defined in `app/api/` directory
 - **Examples**: Sample code in `app/examples/` to demonstrate usage patterns
+- **Utility Functions**: Located at `app/utils/` with common helper modules:
+  - `prompts.py` - AI prompt templates and management
+  - `file_utils.py` - File processing and manipulation utilities
+  - `date_utils.py` - Date/time handling and formatting
+  - `serializers.py` - Data conversion and serialization helpers
+  - `constants.py` - Shared constants and settings
+  - `response_utils.py` - API response formatting and standardization
 
 ## Architecture Notes
 
