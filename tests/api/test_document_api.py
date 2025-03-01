@@ -4,7 +4,7 @@ import pytest
 from fastapi import FastAPI, status
 from fastapi.testclient import TestClient
 
-from app.api.document import router as document_router
+from app.api.document_api import router as document_router
 
 app = FastAPI()
 app.include_router(document_router)
