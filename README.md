@@ -17,13 +17,46 @@
 
 Built with modern cloud-native technologies and state-of-the-art AI models, SingSi.AI aims to enhance teaching efficiency while delivering personalized learning experiences at scale.
 
+## Current Implementation Status
+
+- **AI Service Layer**: ✅ Modular AI service architecture supporting multiple providers (backend only)
+- **Document Management**: ✅ Basic upload, storage and retrieval of educational materials
+- **Document Analysis**: 🔄 Initial document passing to AI (no real document parsing yet)
+- **Image Processing**: 📝 Framework only, functionality not implemented
+- **API Endpoints**: ✅ Initial RESTful API with Swagger documentation
+- **Database Integration**: ✅ PostgreSQL integration with SQLAlchemy models
+- **Frontend Interface**: 🔄 Basic informational frontend only
+
+### Not Yet Implemented:
+
+- ❌ Prompt templating system
+- ❌ Advanced document content extraction
+- ❌ Actual image analysis
+- ❌ Educational material generation
+- ❌ Learning analytics & dashboards
+- ❌ Assessment generation system
+- ❌ Adaptive learning features
+- ❌ User authentication & authorization
+- ❌ Comprehensive frontend interface
+
 ## Technology Stack
 
-- **Web Framework**: FastAPI
-- **ORM**: SQLAlchemy
+- **Web Framework**: FastAPI with Async support
+- **ORM**: SQLAlchemy (Async)
 - **Database**: PostgreSQL
-- **AI/ML**: Langchain + OpenAI
-- **Async Tasks**: Celery + Redis
+- **AI Integration**:
+  - OpenAI (primary)
+  - Support for Gemini, Claude, DeepSeek (planned)
+- **Design Patterns**: Factory Pattern, Dependency Injection, Strategy Pattern
+- **Documentation**: OpenAPI/Swagger, ReDoc
+
+## Project Architecture
+
+The project follows SOLID principles with a clean separation of concerns:
+- Abstract interfaces define capabilities (e.g., `AIService`)
+- Concrete implementations provide specific functionality (e.g., `OpenAIService`)
+- Factory modules handle object creation and dependency injection
+- Configuration is centralized and strongly typed using Pydantic
 
 ## Quick Start
 
@@ -43,7 +76,7 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-Visit http://localhost:8000/docs for API documentation.
+Visit http://localhost:8000 for home page or http://localhost:8000/docs for API documentation (Swagger UI).
 
 ## Contributing
 
@@ -51,9 +84,9 @@ Please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of
 
 ## Documentation
 
-- [Product Requirements Document](docs/PRD_en.md) ([中文版](docs/PRD_zh_TW.md))
-- [Project Structure](docs/project_structure.md)
-- ~~[API Documentation](docs/api.md)~~
+- [Product Requirements Document](docs/PRD_en.md)
+- [Design Proposals](docs/design_proposals_en.md)
+- [Project Structure](docs/project_structure_en.md)
 
 ## License
 

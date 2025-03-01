@@ -9,7 +9,8 @@ from sqlalchemy.orm import sessionmaker
 
 from app.db.session import AsyncSessionLocal
 from app.models.document import Document, DocumentDB, DocumentMetadata, DocumentType
-from app.services.ai.factory import AIProviderFactory
+from app.services.ai.factory import create_ai_service
+from app.services.ai.implementations.openai_service import DocumentAnalysisRequest
 from app.services.storage.local import storage_provider
 
 
@@ -17,7 +18,7 @@ class DocumentService:
     """Service for document processing and analysis."""
 
     def __init__(self, session_factory: sessionmaker = AsyncSessionLocal) -> None:
-        self.ai_provider = AIProviderFactory.create('openai')
+        self.ai_service = create_ai_service(provider='openai')
         self.storage = storage_provider
         self.session_factory = session_factory
 
@@ -67,10 +68,12 @@ class DocumentService:
             )
 
             # Analyze document content
-            doc.analysis_results = await self.ai_provider.analyze_document(
-                content=content,
-                filename=filename,
-                content_type=content_type,
+            doc.analysis_results = await self.ai_service.analyze_document(
+                DocumentAnalysisRequest(
+                    content=content,
+                    filename=filename,
+                    content_type=content_type,
+                )
             )
 
             # Create DB model
