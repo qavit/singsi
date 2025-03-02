@@ -6,7 +6,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import ValidationError
 
 from app.models.document import Document, DocumentMetadata
-from app.services.document.manager import document_manager
+from app.services.document.document_manager import document_manager
 
 router = APIRouter(prefix='/documents', tags=['documents'])
 

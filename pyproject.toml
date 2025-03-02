@@ -94,3 +94,4 @@ force-wrap-aliases = true
 
 [tool.ruff.lint.per-file-ignores]
 "alembic/env.py" = ["E402"]
+"app/services/document/parser_base.py" = ["PLR0913"]

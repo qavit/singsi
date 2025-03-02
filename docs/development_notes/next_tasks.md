@@ -29,6 +29,11 @@
      - Images: `pillow` + `pytesseract` (OCR)
    - Design structured models for parsing results
    - Integrate parsing results into the AI service workflow
+   - **Incorporate Microsoft's Markitdown library**:
+     - Configure OCR capabilities for image-based documents
+     - Enable speech transcription for audio materials
+     - Explore Azure Document Intelligence integration for advanced parsing
+     - Set up LLM-based image description capabilities
 
 3. **Complete AI Platform Support**
    - Implement `GeminiService` class
@@ -71,3 +76,16 @@
 ## VI. Priority Recommendation
 
 Prioritize the Prompt Management System and Document Parsing functionality, as these are foundational for further AI feature development. Next focus on test coverage to ensure implemented features are stable and reliable.
+
+## VII. Advanced Media Processing
+
+1. **Enable OCR for Educational Materials**
+   - Add OCR processing for scanned textbooks and worksheets
+   - Train or fine-tune OCR for mathematical notation and diagrams
+   - Implement structure detection for form-like documents (worksheets, tests)
+
+2. **Implement Audio Processing for Educational Content**
+   - Set up speech-to-text conversion for lectures and presentations
+   - Add language detection for multi-language support
+   - Develop speaker identification for classroom discussions
+   - Create timestamp-based navigation for audio content

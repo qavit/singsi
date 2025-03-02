@@ -3,7 +3,7 @@ import io
 import pytest
 
 from app.models.document import Document, DocumentType
-from app.services.document.manager import document_service
+from app.services.document.document_manager import document_service
 
 
 @pytest.fixture

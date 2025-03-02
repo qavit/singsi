@@ -1,0 +1,300 @@
+diff --git a/.gitignore b/.gitignore
+index 70f871c..92ea92e 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -47,3 +47,12 @@ site/
+ # Storage
+ storage/*
+ !storage/.gitkeep
++
++# Temporary 
++app/services/document/markitdown/
++
++# Keep parser_tester directories but ignore their contents
++app/services/document/parser_tester/sample_files/*
++!app/services/document/parser_tester/sample_files/.gitkeep
++app/services/document/parser_tester/test_results/*
++!app/services/document/parser_tester/test_results/.gitkeep
+diff --git a/app/api/document_api.py b/app/api/document_api.py
+index d5b49e4..148e142 100644
+--- a/app/api/document_api.py
++++ b/app/api/document_api.py
+@@ -6,7 +6,7 @@ from fastapi.responses import StreamingResponse
+ from pydantic import ValidationError
+ 
+ from app.models.document import Document, DocumentMetadata
+-from app.services.document.manager import document_manager
++from app.services.document.document_manager import document_manager
+ 
+ router = APIRouter(prefix='/documents', tags=['documents'])
+ 
+diff --git a/app/services/document/manager.py b/app/services/document/manager.py
+deleted file mode 100644
+index 41e39f7..0000000
+--- a/app/services/document/manager.py
++++ /dev/null
+@@ -1,201 +0,0 @@
+-"""
+-Document management service for handling document processing and storage.
+-
+-Note: This module was relocated from `app.services.document_service` for better
+-organization.
+-"""
+-
+-import json
+-import mimetypes
+-from collections.abc import Sequence
+-from pathlib import Path
+-from typing import Any, BinaryIO
+-
+-from sqlalchemy import select
+-from sqlalchemy.orm import sessionmaker
+-
+-from app.db.session import AsyncSessionLocal
+-from app.models.document import Document, DocumentDB, DocumentMetadata, DocumentType
+-from app.services.ai.factory import create_ai_service
+-from app.services.ai.implementations.openai_service import DocumentAnalysisRequest
+-from app.services.storage.local import storage_provider
+-
+-
+-class DocumentManager:
+-    """Service for document processing and analysis."""
+-
+-    def __init__(self, session_factory: sessionmaker = AsyncSessionLocal) -> None:
+-        self.ai_service = create_ai_service(provider='openai')
+-        self.storage = storage_provider
+-        self.session_factory = session_factory
+-
+-    def _detect_document_type(self, filename: str, content_type: str) -> DocumentType:
+-        """Detect document type from filename and content type."""
+-        ext = Path(filename).suffix.lower()
+-        if ext in {'.pdf'}:
+-            return DocumentType.PDF
+-        elif ext in {'.doc', '.docx'}:
+-            return DocumentType.WORD
+-        elif ext in {'.txt'}:
+-            return DocumentType.TEXT
+-        elif ext in {'.md', '.markdown'}:
+-            return DocumentType.MARKDOWN
+-        elif content_type.startswith('image/'):
+-            return DocumentType.IMAGE
+-        else:
+-            raise ValueError(f'Unsupported file type: {filename} ({content_type})')
+-
+-    async def process_document(
+-        self,
+-        file: BinaryIO,
+-        filename: str,
+-        content_type: str | None = None,
+-        metadata: dict[str, Any] | None = None,
+-    ) -> Document:
+-        """Process and analyze uploaded document."""
+-        async with self.session_factory() as session:
+-            try:
+-                content = file.read()
+-                content_type = (
+-                    content_type
+-                    or mimetypes.guess_type(filename)[0]
+-                    or 'application/octet-stream'
+-                )
+-
+-                # Save file to storage
+-                storage_path = await self.storage.save_file(
+-                    file, filename, content_type
+-                )
+-
+-                # Create document model
+-                doc = Document(
+-                    filename=filename,
+-                    content_type=content_type,
+-                    file_size=len(content),
+-                    type=self._detect_document_type(filename, content_type),
+-                    metadata=DocumentMetadata(**(metadata or {'title': filename})),
+-                    storage_path=storage_path,
+-                )
+-
+-                # Analyze document content
+-                doc.analysis_results = await self.ai_service.analyze_document(
+-                    DocumentAnalysisRequest(
+-                        content=content,
+-                        filename=filename,
+-                        content_type=content_type,
+-                    )
+-                )
+-
+-                # Create DB model
+-                db_doc = DocumentDB(
+-                    id=doc.id,
+-                    filename=doc.filename,
+-                    content_type=doc.content_type,
+-                    file_size=doc.file_size,
+-                    type=doc.type,
+-                    doc_metadata=json.dumps(doc.metadata.model_dump()),
+-                    storage_path=doc.storage_path,
+-                    vector_ids=json.dumps(doc.vector_ids),
+-                    created_at=doc.created_at,
+-                    updated_at=doc.updated_at,
+-                    analysis_results=json.dumps(doc.analysis_results),
+-                )
+-
+-                # Save to database
+-                session.add(db_doc)
+-                await session.commit()
+-
+-                return doc
+-            except Exception as e:
+-                await session.rollback()
+-                raise e
+-
+-    async def get_document(self, document_id: str) -> Document | None:
+-        """Get document by ID."""
+-        async with self.session_factory() as session:
+-            result = await session.execute(
+-                select(DocumentDB).where(DocumentDB.id == document_id)
+-            )
+-            db_doc = result.scalar_one_or_none()
+-
+-            if not db_doc:
+-                return None
+-
+-            return Document(
+-                id=db_doc.id,
+-                filename=db_doc.filename,
+-                content_type=db_doc.content_type,
+-                file_size=db_doc.file_size,
+-                type=db_doc.type,
+-                metadata=DocumentMetadata(**json.loads(db_doc.doc_metadata)),
+-                storage_path=db_doc.storage_path,
+-                vector_ids=json.loads(db_doc.vector_ids),
+-                created_at=db_doc.created_at,
+-                updated_at=db_doc.updated_at,
+-                analysis_results=json.loads(db_doc.analysis_results),
+-            )
+-
+-    async def delete_document(self, document_id: str) -> bool:
+-        """Delete document and its stored file."""
+-        async with self.session_factory() as session:
+-            # Get document
+-            result = await session.execute(
+-                select(DocumentDB).where(DocumentDB.id == document_id)
+-            )
+-            db_doc = result.scalar_one_or_none()
+-
+-            if not db_doc or not db_doc.storage_path:
+-                return False
+-
+-            # Delete file
+-            if await self.storage.delete_file(db_doc.storage_path):
+-                # Delete from database
+-                await session.delete(db_doc)
+-                await session.commit()
+-                return True
+-            return False
+-
+-    async def list_documents(
+-        self,
+-        page: int = 1,
+-        per_page: int = 10,
+-        doc_type: str | None = None,
+-    ) -> tuple[Sequence[Document], int]:
+-        """List documents with pagination."""
+-        async with self.session_factory() as session:
+-            query = select(DocumentDB)
+-            if doc_type:
+-                query = query.where(DocumentDB.type == doc_type)
+-
+-            # Get total count
+-            count_result = await session.execute(query)
+-            total = len(count_result.scalars().all())
+-
+-            # Get paginated results
+-            query = query.offset((page - 1) * per_page).limit(per_page)
+-            result = await session.execute(query)
+-            db_docs = result.scalars().all()
+-
+-            # Convert to Pydantic models
+-            documents = [
+-                Document(
+-                    id=doc.id,
+-                    filename=doc.filename,
+-                    content_type=doc.content_type,
+-                    file_size=doc.file_size,
+-                    type=doc.type,
+-                    metadata=DocumentMetadata(**json.loads(doc.doc_metadata)),
+-                    storage_path=doc.storage_path,
+-                    vector_ids=json.loads(doc.vector_ids),
+-                    created_at=doc.created_at,
+-                    updated_at=doc.updated_at,
+-                    analysis_results=json.loads(doc.analysis_results),
+-                )
+-                for doc in db_docs
+-            ]
+-
+-            return documents, total
+-
+-
+-# Create singleton instance
+-document_manager = DocumentManager()
+diff --git a/docs/development_notes/next_tasks.md b/docs/development_notes/next_tasks.md
+index eb874d0..8631327 100644
+--- a/docs/development_notes/next_tasks.md
++++ b/docs/development_notes/next_tasks.md
+@@ -29,6 +29,11 @@
+      - Images: `pillow` + `pytesseract` (OCR)
+    - Design structured models for parsing results
+    - Integrate parsing results into the AI service workflow
++   - **Incorporate Microsoft's Markitdown library**:
++     - Configure OCR capabilities for image-based documents
++     - Enable speech transcription for audio materials
++     - Explore Azure Document Intelligence integration for advanced parsing
++     - Set up LLM-based image description capabilities
+ 
+ 3. **Complete AI Platform Support**
+    - Implement `GeminiService` class
+@@ -71,3 +76,16 @@
+ ## VI. Priority Recommendation
+ 
+ Prioritize the Prompt Management System and Document Parsing functionality, as these are foundational for further AI feature development. Next focus on test coverage to ensure implemented features are stable and reliable.
++
++## VII. Advanced Media Processing
++
++1. **Enable OCR for Educational Materials**
++   - Add OCR processing for scanned textbooks and worksheets
++   - Train or fine-tune OCR for mathematical notation and diagrams
++   - Implement structure detection for form-like documents (worksheets, tests)
++
++2. **Implement Audio Processing for Educational Content**
++   - Set up speech-to-text conversion for lectures and presentations
++   - Add language detection for multi-language support
++   - Develop speaker identification for classroom discussions
++   - Create timestamp-based navigation for audio content
+diff --git a/requirements.txt b/requirements.txt
+index 9b35689..7b59739 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -30,6 +30,12 @@ openai>=1.65.1
+ # pillow>=8.2.0
+ # matplotlib>=3.4.0
+ 
++# Document Processing
++python-docx>=1.1.2
++PyMyPDF>=1.25.3
++markitdown>=0.0.1a5
++pytesseract>=0.3.13
++
+ # Logging and Monitoring
+ # loguru>=0.5.0
+ # prometheus-client>=0.11.0
+diff --git a/tests/services/document/test_document_service.py b/tests/services/document/test_document_service.py
+index e28b1fb..1ea74be 100644
+--- a/tests/services/document/test_document_service.py
++++ b/tests/services/document/test_document_service.py
+@@ -3,7 +3,7 @@ import io
+ import pytest
+ 
+ from app.models.document import Document, DocumentType
+-from app.services.document.manager import document_service
++from app.services.document.document_manager import document_service
+ 
+ 
+ @pytest.fixture

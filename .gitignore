@@ -47,3 +47,12 @@ site/
 # Storage
 storage/*
 !storage/.gitkeep
+
+# Temporary 
+app/services/document/markitdown/
+
+# Keep parser_tester directories but ignore their contents
+app/services/document/parser_tester/sample_files/*
+!app/services/document/parser_tester/sample_files/.gitkeep
+app/services/document/parser_tester/test_results/*
+!app/services/document/parser_tester/test_results/.gitkeep
