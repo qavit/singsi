@@ -91,7 +91,10 @@ async def test_process_text_document(sample_text_file, sample_metadata):
     assert doc.type == DocumentType.TEXT
     assert doc.metadata.title == sample_metadata['title']
     assert doc.metadata.tags == sample_metadata['tags']
-    assert 'status' in doc.analysis_results
+
+    assert 'text' in doc.analysis_results
+    assert 'model' in doc.analysis_results
+    assert 'usage' in doc.analysis_results
 
 
 @pytest.mark.unit
@@ -109,7 +112,10 @@ async def test_process_pdf_document(sample_pdf_file, sample_metadata):
     assert doc.filename == 'test.pdf'
     assert doc.type == DocumentType.PDF
     assert doc.metadata.title == sample_metadata['title']
-    assert 'status' in doc.analysis_results
+
+    assert 'text' in doc.analysis_results
+    assert 'model' in doc.analysis_results
+    assert 'usage' in doc.analysis_results
 
 
 @pytest.mark.unit
