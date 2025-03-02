@@ -1,3 +1,10 @@
+"""
+Document management service for handling document processing and storage.
+
+Note: This module was relocated from `app.services.document_service` for better
+organization.
+"""
+
 import json
 import mimetypes
 from collections.abc import Sequence
@@ -14,7 +21,7 @@ from app.services.ai.implementations.openai_service import DocumentAnalysisReque
 from app.services.storage.local import storage_provider
 
 
-class DocumentService:
+class DocumentManager:
     """Service for document processing and analysis."""
 
     def __init__(self, session_factory: sessionmaker = AsyncSessionLocal) -> None:
@@ -47,55 +54,61 @@ class DocumentService:
     ) -> Document:
         """Process and analyze uploaded document."""
         async with self.session_factory() as session:
-            content = file.read()
-            content_type = (
-                content_type
-                or mimetypes.guess_type(filename)[0]
-                or 'application/octet-stream'
-            )
+            try:
+                content = file.read()
+                content_type = (
+                    content_type
+                    or mimetypes.guess_type(filename)[0]
+                    or 'application/octet-stream'
+                )
 
-            # Save file to storage
-            storage_path = await self.storage.save_file(file, filename, content_type)
+                # Save file to storage
+                storage_path = await self.storage.save_file(
+                    file, filename, content_type
+                )
 
-            # Create document model
-            doc = Document(
-                filename=filename,
-                content_type=content_type,
-                file_size=len(content),
-                type=self._detect_document_type(filename, content_type),
-                metadata=DocumentMetadata(**(metadata or {'title': filename})),
-                storage_path=storage_path,
-            )
-
-            # Analyze document content
-            doc.analysis_results = await self.ai_service.analyze_document(
-                DocumentAnalysisRequest(
-                    content=content,
+                # Create document model
+                doc = Document(
                     filename=filename,
                     content_type=content_type,
+                    file_size=len(content),
+                    type=self._detect_document_type(filename, content_type),
+                    metadata=DocumentMetadata(**(metadata or {'title': filename})),
+                    storage_path=storage_path,
                 )
-            )
 
-            # Create DB model
-            db_doc = DocumentDB(
-                id=doc.id,
-                filename=doc.filename,
-                content_type=doc.content_type,
-                file_size=doc.file_size,
-                type=doc.type,
-                doc_metadata=json.dumps(doc.metadata.model_dump()),
-                storage_path=doc.storage_path,
-                vector_ids=json.dumps(doc.vector_ids),
-                created_at=doc.created_at,
-                updated_at=doc.updated_at,
-                analysis_results=json.dumps(doc.analysis_results),
-            )
+                # Analyze document content
+                doc.analysis_results = await self.ai_service.analyze_document(
+                    DocumentAnalysisRequest(
+                        content=content,
+                        filename=filename,
+                        content_type=content_type,
+                    )
+                )
 
-            # Save to database
-            session.add(db_doc)
-            await session.commit()
+                # Create DB model
+                db_doc = DocumentDB(
+                    id=doc.id,
+                    filename=doc.filename,
+                    content_type=doc.content_type,
+                    file_size=doc.file_size,
+                    type=doc.type,
+                    doc_metadata=json.dumps(doc.metadata.model_dump()),
+                    storage_path=doc.storage_path,
+                    vector_ids=json.dumps(doc.vector_ids),
+                    created_at=doc.created_at,
+                    updated_at=doc.updated_at,
+                    analysis_results=json.dumps(doc.analysis_results),
+                )
 
-            return doc
+                # Save to database
+                session.add(db_doc)
+                await session.commit()
+
+                return doc
+            except Exception as e:
+                await session.rollback()
+                raise e
 
     async def get_document(self, document_id: str) -> Document | None:
         """Get document by ID."""
@@ -185,4 +198,4 @@ class DocumentService:
 
 
 # Create singleton instance
-document_service = DocumentService()
+document_manager = DocumentManager()

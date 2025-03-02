@@ -6,7 +6,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import ValidationError
 
 from app.models.document import Document, DocumentMetadata
-from app.services.document_service import document_service
+from app.services.document.manager import document_manager
 
 router = APIRouter(prefix='/documents', tags=['documents'])
 
@@ -37,7 +37,7 @@ async def upload_document(
         doc_metadata = DocumentMetadata(**meta_dict)
 
         # Process document
-        doc = await document_service.process_document(
+        doc = await document_manager.process_document(
             file=file.file,
             filename=file.filename,
             content_type=file.content_type,
@@ -63,7 +63,7 @@ async def upload_document(
 @router.get('/{document_id}')
 async def get_document(document_id: str) -> Document:
     """Get document metadata by ID."""
-    doc = await document_service.get_document(document_id)
+    doc = await document_manager.get_document(document_id)
     if not doc:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -75,7 +75,7 @@ async def get_document(document_id: str) -> Document:
 @router.get('/{document_id}/download')
 async def download_document(document_id: str) -> StreamingResponse:
     """Download document content."""
-    doc = await document_service.get_document(document_id)
+    doc = await document_manager.get_document(document_id)
     if not doc or not doc.storage_path:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -83,7 +83,7 @@ async def download_document(document_id: str) -> StreamingResponse:
         )
 
     try:
-        file_handle, content_type = await document_service.storage.get_file(
+        file_handle, content_type = await document_manager.storage.get_file(
             doc.storage_path
         )
 
@@ -116,7 +116,7 @@ async def download_document(document_id: str) -> StreamingResponse:
 @router.delete('/{document_id}')
 async def delete_document(document_id: str) -> dict[str, str]:
     """Delete document."""
-    success = await document_service.delete_document(document_id)
+    success = await document_manager.delete_document(document_id)
     if not success:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -132,7 +132,7 @@ async def list_documents(
     type: str | None = None,
 ) -> dict[str, Any]:  # Fix: change 'any' to 'Any'
     """List all documents with pagination."""
-    documents, total = await document_service.list_documents(
+    documents, total = await document_manager.list_documents(
         page=page,
         per_page=per_page,
         doc_type=type,
