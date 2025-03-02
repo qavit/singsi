@@ -69,7 +69,6 @@ packages = [
 target-version = "py312"
 line-length = 88
 extend-exclude = ["migrations", ".venv"]
-ignore = ["RUF001"]
 
 [tool.ruff.format]
 quote-style = "single"
@@ -87,6 +86,7 @@ select = [
     "PL",   # pylint
     "RUF",  # ruff-specific rules
 ]
+ignore = ["RUF001"]
 
 [tool.ruff.lint.isort]
 combine-as-imports = true
