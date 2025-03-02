@@ -1,0 +1,51 @@
+@startuml AIServiceClassDiagram
+title AI service class diagram
+!define AI_BASE app.services.ai.base
+!define AI_FACTORY app.services.ai.factory
+!define AI_IMPLEMENTATIONS app.services.ai.implementations
+!define AI_UTILS app.services.ai.utils
+
+package AI_BASE {
+    interface AIService {
+        +analyze_document(request: DocumentAnalysisRequest): dict[str, Any]
+        +generate_response(prompt: str): str
+    }
+
+    class DocumentAnalysisRequest {
+        +content: bytes
+        +filename: str
+        +content_type: str
+    }
+}
+
+package AI_FACTORY {
+    class AIServiceFactory {
+        +create_ai_service(provider: str): AIService
+    }
+}
+
+package AI_IMPLEMENTATIONS {
+    class OpenAIService {
+        +analyze_document(request: DocumentAnalysisRequest): dict[str, Any]
+        +generate_response(prompt: str): str
+    }
+
+    class GeminiService {
+        +analyze_document(request: DocumentAnalysisRequest): dict[str, Any]
+        +generate_response(prompt: str): str
+    }
+}
+
+package AI_UTILS {
+    class LoggingUtils {
+        +log_request(request: DocumentAnalysisRequest): void
+        +log_response(response: dict[str, Any]): void
+    }
+}
+
+AIServiceFactory --> AIService
+AIService <|.. OpenAIService
+AIService <|.. GeminiService
+OpenAIService --> LoggingUtils
+GeminiService --> LoggingUtils
+@enduml

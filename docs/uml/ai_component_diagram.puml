@@ -1,0 +1,15 @@
+@startuml AIServiceComponentDiagram
+title AI service component diagram
+package "AI Service System" {
+    [AIServiceFactory] --> [AIService]
+    [AIService] <|.. [OpenAIService]
+    [AIService] <|.. [GeminiService]
+    [OpenAIService] --> [LoggingUtils]
+    [GeminiService] --> [LoggingUtils]
+}
+
+package "Document Service" {
+    [DocumentService] --> [AIServiceFactory]
+    [DocumentService] --> [LoggingUtils]
+}
+@enduml

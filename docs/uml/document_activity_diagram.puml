@@ -1,0 +1,16 @@
+@startuml DocumentActivityDiagram
+title Document parsing activity diagram
+start
+:Receive document content and mimetype;
+:Normalize mimetype;
+:Retrieve appropriate parser from ParserRegistry;
+if (Parser found?) then (yes)
+    :Create parser instance;
+    :Parse document content;
+    :Return parsing result;
+else (no)
+    :Log warning;
+    :Return error message;
+endif
+stop
+@enduml

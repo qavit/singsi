@@ -1,0 +1,77 @@
+@startuml DocumentClassDiagram
+title Document parsing class diagram
+!define DOC_PARSER_SERVICE app.services.document.document_parser_service
+!define PARSER_BASE app.services.document.parser_base
+!define PARSERS app.services.document.parsers
+!define PARSER_TESTER app.services.document.parser_tester
+
+package DOC_PARSER_SERVICE {
+    class DocumentParserService {
+        +parse_document(content: bytes, mimetype: str, filename: str | None = None): dict[str, Any]
+        +get_supported_mimetypes(): list[str]
+    }
+}
+
+package PARSER_BASE {
+    class ParsingResult {
+        -text: str
+        -metadata: dict[str, Any]
+        -pages: int
+        -structure: dict[str, Any]
+        -error: str | None
+        -tables: list
+        -images: list
+        -audio_transcription: str | None
+        +success: bool
+        +to_dict(): dict[str, Any]
+    }
+
+    interface DocumentParser {
+        +parse(content: bytes, filename: str | None = None): ParsingResult
+        +supported_mimetypes(): list[str]
+    }
+
+    class ParserRegistry {
+        -_parsers: dict[str, type[DocumentParser]]
+        +register(parser_class: type[DocumentParser]): void
+        +get_parser(mimetype: str): type[DocumentParser] | None
+        +get_supported_types(): list[str]
+    }
+}
+
+package PARSERS {
+    class PDFParser {
+        +parse(content: bytes, filename: str | None = None): ParsingResult
+        +supported_mimetypes(): list[str]
+        -_parse_with_pymupdf(content: bytes): tuple[str, dict[str, Any], dict[str, Any]]
+        -_parse_with_pdfminer(content: bytes): str
+    }
+
+    class DocxParser {
+        +parse(content: bytes, filename: str | None = None): ParsingResult
+        +supported_mimetypes(): list[str]
+        -_extract_text(doc: docx.Document): str
+        -_extract_metadata(doc: docx.Document): dict[str, Any]
+        -_extract_structure(doc: docx.Document): dict[str, Any]
+    }
+}
+
+package PARSER_TESTER {
+    class ParserTester {
+        +test_parser(parser_class, file_path: str, test_results: TestResults): dict[str, Any]
+        +get_parser_class(parser_name: str): type[DocumentParser] | None
+        +get_file_extension_for_parser(parser_name: str): list[str]
+        +find_test_files(directory: Path, extensions: list[str]): list[Path]
+        +setup_test_environment(): tuple[Path, Path]
+        +process_specific_file(file_path: str, parser_type: str | None, test_results: TestResults, results_dir: Path, verbose: bool): bool
+        +test_all_parsers(parser_type: str | None, test_files_dir: Path, test_results: TestResults, results_dir: Path, verbose: bool): None
+        +main(parser_type: str | None = None, specific_file: str | None = None, verbose: bool = False): None
+        +save_result(result: dict, output_file: Path, verbose: bool = False): None
+    }
+}
+
+DocumentParserService --> ParserRegistry
+ParserRegistry --> DocumentParser
+DocumentParser <|-- PDFParser
+DocumentParser <|-- DocxParser
+@enduml

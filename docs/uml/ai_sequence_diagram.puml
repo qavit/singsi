@@ -1,0 +1,19 @@
+@startuml AIServiceSequenceDiagram
+title AI service sequence diagram
+actor User
+participant DocumentService
+participant AIServiceFactory
+participant OpenAIService
+participant LoggingUtils
+
+User -> DocumentService: analyze_document(request)
+DocumentService -> AIServiceFactory: create_ai_service(provider)
+AIServiceFactory --> DocumentService: ai_service
+
+DocumentService -> LoggingUtils: log_request(request)
+DocumentService -> OpenAIService: analyze_document(request)
+OpenAIService --> DocumentService: analysis_results
+DocumentService -> LoggingUtils: log_response(analysis_results)
+
+DocumentService --> User: analysis_results
+@enduml

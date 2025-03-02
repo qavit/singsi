@@ -1,0 +1,12 @@
+@startuml AIServiceActivityDiagram
+title AI service activity diagram
+start
+:Receive document analysis request;
+:Log request details;
+:Select appropriate AI service provider;
+:Send document content to AI service;
+:Receive analysis results;
+:Log response details;
+:Return analysis results;
+stop
+@enduml

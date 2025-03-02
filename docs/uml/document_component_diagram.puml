@@ -1,0 +1,14 @@
+@startuml DocumentComponentDiagram
+title Document Parsing Component Diagram
+package "Document Parsing System" {
+    [DocumentParserService] --> [ParserRegistry]
+    [ParserRegistry] --> [PDFParser]
+    [ParserRegistry] --> [DocxParser]
+    [ParserRegistry] --> [OtherParsers]
+}
+
+package "Testing Utilities" {
+    [ParserTester] --> [DocumentParserService]
+    [ParserTester] --> [ParserRegistry]
+}
+@enduml

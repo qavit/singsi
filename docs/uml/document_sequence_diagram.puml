@@ -1,0 +1,22 @@
+@startuml DocumentSequenceDiagram
+title Document Parsing Sequence Diagram
+actor User
+participant DocumentParserService
+participant ParserRegistry
+participant PDFParser
+participant DocxParser
+
+User -> DocumentParserService: parse_document(content, mimetype, filename)
+DocumentParserService -> ParserRegistry: get_parser(mimetype)
+ParserRegistry --> DocumentParserService: parser_class
+
+alt PDF Document
+    DocumentParserService -> PDFParser: parse(content, filename)
+    PDFParser --> DocumentParserService: ParsingResult
+else DOCX Document
+    DocumentParserService -> DocxParser: parse(content, filename)
+    DocxParser --> DocumentParserService: ParsingResult
+end
+
+DocumentParserService --> User: ParsingResult
+@enduml
