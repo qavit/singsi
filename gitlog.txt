@@ -1,0 +1,581 @@
+commit cca53d9ac8e3b4a633a0d46c9849dbac5a98f70a
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Sun Mar 2 15:01:32 2025 +0800
+
+    feat(document): refactor and enhance document parsing system
+    
+    - Reorganize parsers into dedicated directory structure
+    - Implement PDF, DOCX, image and Markitdown parsers
+    - Add `parser_tester.py` utility with CLI options
+    - Create `ParserRegistry` for dynamic parser discovery
+    - Update dependencies for document processing libraries
+    - Fix content extraction and error handling logic
+    
+    This refactoring improves document content extraction capabilities and provides a foundation for future AI content analysis features.
+
+commit e6160300363d7edfa94d0fa9f23287c62139defb
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Sun Mar 2 12:41:21 2025 +0800
+
+    refactor(document): reorganize document service structure
+    
+    - Move `DocumentService` from `app/services/document_service.py` to `app/services/document/manager.py`
+    - Rename `DocumentService` class to `DocumentManager`
+    - Rename `document_service` instance to `document_manager`
+    - Update all imports across the project to reference the new location
+    - Add transaction handling with try/except/rollback in `process_document` method
+    - Update documentation comments
+    
+    This change improves code organization by grouping document-related functionality in a single directory and makes the naming more accurate.
+
+commit 6e04d1ceb9765cf5da3ca7ac77437e7580978085
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Sun Mar 2 10:46:46 2025 +0800
+
+    feat: integrate prompt management system with AI services
+    
+    - Implement prompt templating in `OpenAIService`:
+      - Add support for template-based text processing
+      - Enhance document analysis with `document_analysis` template
+      - Add image analysis with `image_analysis` template
+      - Implement template support in `generate_response`
+    
+    - Create comprehensive test suite:
+      - Test template integration with AI services
+      - Verify template-based document and image analysis
+      - Test fallback behavior for template errors
+    
+    - Update documentation:
+      - Mark prompt management system as implemented in main `README.md`
+    
+    This integration replaces hardcoded prompts with a flexible template system,
+    improving consistency, maintainability, and adaptability of AI interactions
+    across the application.
+
+commit 078d095116793124355a59d6b2ce8ebc23c5a8ee
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Sun Mar 2 10:31:16 2025 +0800
+
+    chore: update `pyproject.toml` to fix linter configuration warnings
+    
+    - Move top-level linter settings to the `lint` section as recommended
+      - Update `ignore` to `lint.ignore`
+      - Ensure all linter settings are correctly placed under `lint` section
+    
+    This change resolves the deprecation warnings related to linter settings and ensures compatibility with the latest configuration standards.
+
+commit d9be172d687155c312d81e8da777501590bfe5da
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Sun Mar 2 10:28:32 2025 +0800
+
+    feat(utils): implement prompt management system
+    
+    - Build a flexible prompt templating system in `app/utils/prompts.py`:
+      - Support for variable substitution in templates
+      - Role-based messaging (system, user, assistant)
+      - Centralized template library with version management
+      - Template metadata for improved organization
+    
+    - Add educational prompt templates:
+      - Document analysis template
+      - Image analysis template
+      - Question generation template
+    
+    - Add comprehensive unit tests with 94% coverage
+    
+    This implementation provides a foundation for consistent prompt management across the application, replacing hardcoded prompts with a maintainable template system that supports versioning and variable substitution.
+
+commit 5056457697a02d4b366e8ccdd2d629285f77027b
+Merge: cbc31cf 6a0c737
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Sun Mar 2 09:58:16 2025 +0800
+
+    Merge feat/ai_service into develop
+    
+    Complete AI service architecture refactoring with the following improvements:
+    - Implement abstract AIService interface with clean separation of concerns
+    - Create factory pattern for dynamic AI service instantiation
+    - Support multiple AI providers through standardized interfaces
+    - Add comprehensive unit testing with 23 passing tests
+    - Fix all deprecation warnings
+    
+    This refactoring provides a solid foundation for future AI capabilities
+    including prompt management, document parsing, and multi-provider support.
+
+commit 6a0c737621f1b2ca4155e0bc4b49fd0f29a87dd3
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Sun Mar 2 04:32:30 2025 +0800
+
+    chore: fix deprecation warnings in test environment
+    
+    - Update SQLAlchemy imports in `base_class.py` to use recommended paths
+      - Replace deprecated `sqlalchemy.ext.declarative` with `sqlalchemy.orm`
+      - Compatible with SQLAlchemy 2.0
+    
+    - Improve test configuration
+      - Remove custom `event_loop` fixture to rely on `pytest-asyncio`'s built-in one
+      - Clean up unused imports in `conftest.py`
+      - Retain proper asyncio configuration in `pytest.ini`
+    
+    These changes eliminate all deprecation warnings while running tests
+    and ensure compatibility with future library versions.
+
+commit 723ea8d2e2e0d41a34fba0c046c9802df58825f4
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Sun Mar 2 04:22:38 2025 +0800
+
+    test: restructure tests and add comprehensive test coverage for AI services
+    
+    - Reorganize test directory structure by module instead of test type
+    - Fix tests to work with the new AI service architecture
+    - Add API tests for AI endpoints using integration testing approach
+    - Update test expectations to match new service responses
+    - Configure pytest markers and fix warnings
+    
+    These changes ensure the AI service refactoring is thoroughly tested
+    and maintains high code quality with 23 passing tests.
+
+commit cbc31cf25b9ab8d2c998bf41a7c2d69bb68d1a57
+Merge: d5fadac ebe8355
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Sun Mar 2 02:18:00 2025 +0800
+
+    Merge branch 'feat/ai_service' into develop
+
+commit ebe83556f8f91d1d5076bb642b630e9449cc8932
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Sun Mar 2 02:17:28 2025 +0800
+
+    docs: add development roadmap with prioritized tasks
+    
+    - Create `docs/development_notes/next_tasks.md` in English
+    - Structure development priorities into clear sections
+    - Clearly identify dependencies between tasks
+
+commit d5fadacb88f8e4cd4bb3840bd9878120b450dc9f
+Merge: 311429b ff4a22e
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Sun Mar 2 02:03:36 2025 +0800
+
+    Merge branch 'feat/ai_service' into develop
+
+commit ff4a22ed0ea1b033ae7e82458b449659f22813a3
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Sun Mar 2 02:00:30 2025 +0800
+
+    docs: improve README clarity and add English design proposals
+    
+    - Update `README.md` with accurate implementation status:
+      - Add detailed "Current Implementation Status" section with clear indicators
+      - Document "Not Yet Implemented" features for transparency
+      - Improve technology stack description with design patterns
+      - Add project architecture overview
+    
+    - Support bilingual documentation:
+      - Add English version of design proposals (`design_proposals_en.md`)
+      - Rename `design_proposals.md` to `design_proposals_zh_TW.md` for clarity
+    
+    - Enhance code readability:
+      - Improve database URI construction in `config.py`
+    
+    These changes provide clearer project status information and make
+    documentation more accessible to English-speaking contributors.
+
+commit 933900fd8096211239846f7301428bdff808fa37
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Sun Mar 2 01:27:48 2025 +0800
+
+    docs: update UI and project documentation to reflect development status
+    
+    - Update \`templates/index.html\` to reflect current AI implementation status:
+      - Clarify 'Text Analysis' as having multi-provider architecture implemented
+      - Rename 'Document Summarization' to 'Document Processing' with accurate status
+      - Add 'Image Analysis' as in-progress feature (replacing planned 'Question Generation')
+    
+    - Enhance project structure documentation with **utility functions** details:
+      - Add comprehensive list of planned utility modules in both English and Chinese docs
+      - Document specific responsibilities of each utils module (prompts, file handling, etc.)
+    
+    These changes ensure documentation and UI accurately reflect our current
+    development progress and planned architecture.
+
+commit b2af7596c11b865f256ff2be61a5ec1dab9a4db4
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Sun Mar 2 01:10:53 2025 +0800
+
+    refactor(ai): enhance module exports and simplify imports
+    
+    - Add module exports in `__init__.py` files for cleaner imports:
+      - Export `AIService` in `app.services.ai.base`
+      - Export `create_ai_service` in `app.services.ai.factory`
+    - Remove legacy files that are no longer needed:
+      - Delete `app/services/ai/base.py` (replaced by `ai_service_abstract.py`)
+      - Delete `app/services/ai/factory.py` (replaced by `ai_service_factory.py`)
+    - Refactor `OpenAIService.analyze_document` using `DocumentAnalysisRequest` class
+      to fix PLR0913 (too many arguments) and support both text and binary formats
+    - Enhance `analyze_image` to handle both file paths and binary data
+    - Migrate `document_service.py` to use the new AI service architecture
+    
+    These changes improve code organization, simplify imports with cleaner paths,
+    and maintain backward compatibility while enhancing document analysis capabilities.
+    All tests and API endpoints continue to function with the new structure.
+
+commit d7039e4d9e30be3797f9bd03b6f34a415ea4186c
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Sat Mar 1 23:49:21 2025 +0800
+
+    refactor(api): rename API endpoints and integrate new AI service architecture
+    
+    - Rename `ai_services.py` to `ai_api.py` for clearer file naming semantics
+    - Rename `document.py` to `document_api.py` for naming consistency
+    - Update API implementations to use dependency injection with `AIService`
+    - Implement proper error handling for binary image data
+    - Update main.py to reference new API file paths
+    - Successfully tested all AI endpoints: process-text, process-image, generate-image, status
+    
+    These changes complete the AI service restructuring by connecting the redesigned AI module with FastAPI endpoints, resulting in cleaner
+    dependency management and clearer separation of concerns.
+
+commit 48715ad1e0c7dead98f62fcefbf12bcfe1e0cd72
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Sat Mar 1 23:14:48 2025 +0800
+
+    docs: update project architecture documentation with bilingual support
+    
+    - Add `design_proposals.md` with comprehensive architectural patterns and design principles
+    - Replace `project_structure.md` with separate English and Traditional Chinese versions
+    - Create `project_structure_en.md` with detailed directory layout and component relationships
+    - Add `project_structure_zh_TW.md` for Traditional Chinese localization
+    
+    These documents provide essential guidance for maintainable development
+    and ensure consistent architecture decisions as the project scales.
+
+commit cf27b4d0a89ac26854a8e49d63978751763b18cb
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Sat Mar 1 23:04:56 2025 +0800
+
+    feat(ai): restructure AI service architecture with design patterns
+    
+    - Refactor AI service components using **factory pattern** & **dependency injection**
+    - Move from 'provider/service split' to unified AI service approach
+    - Create modular design with abstract interfaces supporting **SOLID principles**
+    - Implement async OpenAI client with improved error handling and logging
+    - Update environment variables to use `OPENAI_DEFAULT_MODEL` for better clarity
+    - Add `conversation_example.py` for quick testing of AI functionality
+    
+    This refactoring improves code maintainability, testability, and supports
+    future extension to additional AI providers (Gemini, Claude, DeepSeek).
+
+commit 311429bed0aaec91951ceb70229c786493ca0b70
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Sat Mar 1 03:06:08 2025 +0800
+
+    feat: add beautiful homepage with feature overview
+    
+    - Add HTML template for homepage
+    - Implement CSS styling for responsive design
+    - Configure static files and templates in FastAPI
+    - Add Jinja2 templating support
+    - Create feature cards with implementation status
+
+commit 5560dad1b2e547c252234b28cf939a9e8281e5ba
+Merge: d0f9f29 0ada27c
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Sat Mar 1 02:38:44 2025 +0800
+
+    Merge branch 'feat/document-service' into develop
+
+commit 0ada27cc98fdada8c1edcd8d07209952f77040b1
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Sat Mar 1 02:37:20 2025 +0800
+
+    feat: implement document management
+    
+    - Add document models and database schema
+    - Implement document upload and download
+    - Add file storage service
+    - Configure document API endpoints
+    - Optimize file streaming
+
+commit d0f9f2939de5cbac1f48b03e813d055027faf12c
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Sat Mar 1 02:25:38 2025 +0800
+
+    feat: setup database infrastructure
+    
+    - Add SQLAlchemy async database setup
+    - Configure Alembic migrations
+    - Add database configuration
+    - Update environment and ignore files
+
+commit a65f9180419ea1cd8f330d9db21757bbe24e511a
+Merge: f51a1c3 0882875
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Fri Feb 28 23:45:50 2025 +0800
+
+    Merge branch 'feat/document-service' into develop
+
+commit f51a1c31fd68034b87e45b73f0b977b82f07cf8f
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Fri Feb 28 23:41:13 2025 +0800
+
+    chore: improve code quality and configurations
+    
+    - Use FastAPI status code constants
+    - Update Ruff configuration to ignore the rule RUF001
+    - Clean up `.gitignore` redundancies
+
+commit ebe0f9f2012b949f43283679f24ebd8b255af03d
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Fri Feb 28 23:39:27 2025 +0800
+
+    docs: enhance documentation with better formatting and links
+    
+    - Add links to PyTest, Alembic and GitHub Flow documentation
+    - Improve formatting with bold text for key terms
+
+commit fce242a34de8589946ffff16ce60e00dc4c83970
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Fri Feb 28 23:31:41 2025 +0800
+
+    chore: reorganize test structure
+    
+    - Separate tests into unit/integration/functional categories
+    - Add test markers and improve test organization
+    - Configure PyTest for better test management
+    - Update contributing guidelines with detailed testing docs
+    - Add `conftest.py` for shared test configuration
+
+commit 08828757f9360e2cfc6032deecb59cd4fa0e2e31
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Fri Feb 28 22:54:09 2025 +0800
+
+    feat: implement document service
+    
+    - Add `Document` and `DocumentMetadata` models
+    - Implement `DocumentService` for file processing
+    - Add document upload API endpoint
+    - Support multiple document types
+    - Add metadata handling
+
+commit 81b6386f68e1cd3a3563ce7f4db5eda526a4f630
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Fri Feb 28 21:51:00 2025 +0800
+
+    feat: implement AI service architecture
+    
+    - Add base AIProvider interface for standardization
+    - Implement OpenAI provider with GPT-4o-mini integration
+    - Create AI provider factory for future extensibility
+    - Add configuration for AI providers and `SecretStr` protection
+    - Add initial test coverage for AI functionality
+    
+    Core features:
+    - Text processing with OpenAI ChatGPT
+    - Document analysis interface (mock)
+    - Provider initialization and health check
+    - Environment-based configuration
+    
+    Tests:
+    ✓ Provider initialization
+    ✓ Text processing with GPT-4o-mini
+    ✓ Mock document analysis
+
+commit c3d5ff5c9c9067b33e23e8e1136d4182ba531dfc
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Fri Feb 28 20:55:57 2025 +0800
+
+    docs: reorganize PRD with language versions
+    
+    - Rename `PRD.md` to `PRD_zh_TW.md` for Traditional Chinese
+    - Update documentation links in `README.md`
+
+commit daf7abaa3520a37f8a7cd7326966d8861240fb66
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Fri Feb 28 20:50:50 2025 +0800
+
+    docs: enhance project documentation
+    
+    - Add MIT license file
+    - Create comprehensive contributing guidelines
+    - Update README with badges and clearer structure
+
+commit 540a2c1160735625bc9dd1d33635f338aa490815
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Fri Feb 28 20:08:35 2025 +0800
+
+    docs: create product requirements document
+    
+    - Add comprehensive PRD in both Chinese and English
+    - Define core features and development phases
+    - Document technical requirements and user roles
+    - Update product name to SingSi.AI in main.py
+    - Set clear development priorities and milestones
+
+commit 98a29b0444db1402c1fe807f6d15872c543604e7
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Fri Feb 28 19:42:07 2025 +0800
+
+    docs: simplify service layer documentation
+    
+    - Remove redundant docstrings in AI service
+    - Keep only essential method descriptions
+    - Remove example code blocks
+    - Maintain clear but concise documentation style
+
+commit c5e94bf5e332baa17bcd48421eec995ed64debab
+Merge: 06fb2b4 f98d386
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Fri Feb 28 19:23:14 2025 +0800
+
+    Merge commit 'f98d386a1f9f4c005973644bccd114ecb0742b38'
+
+commit f98d386a1f9f4c005973644bccd114ecb0742b38
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Fri Feb 28 19:22:46 2025 +0800
+
+    ci: temporarily disable pytest in CI workflow
+    
+    - Comment out pytest step until test environment is ready
+    - Will re-enable once tests are properly
+
+commit 06fb2b47ee94f05647b04ca4d23dabbb7e70da3d
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Fri Feb 28 19:18:41 2025 +0800
+
+    chore: optimize dependencies and code style
+    
+    - Comment out unused packages in requirements-dev.txt
+    - Update string quotes in config.py to match project style
+
+commit 6b5900f0c1927d32934cb20baf8e18d7c4e305dd
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Fri Feb 28 19:11:04 2025 +0800
+
+    chore: delete unused flake8 config
+
+commit 8ab7854803abc0ab4979161a4bdbce3901888cdb
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Fri Feb 28 19:09:49 2025 +0800
+
+    refactor: unify code style tooling with Ruff
+    
+    - Replace multiple linters (black, isort, flake8) with Ruff
+    - Update exception handling to use
+    - Modernize type hints using Python 3.10+ syntax
+    - Simplify pre-commit hooks configuration
+    - Update CI pipeline to use Ruff
+    - Remove redundant development dependencies
+
+commit 17c1e545932d2b1c1a93055d783d93fc5008ef78
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Fri Feb 28 18:43:51 2025 +0800
+
+    docs: update documentation and dependencies
+    
+    - Update project documentation
+    - Update core dependencies
+    - Add development guide
+    - Improve setup instructions
+
+commit f9b76f265a44a4e975a79f17f95084cb4798cd89
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Fri Feb 28 18:43:42 2025 +0800
+
+    feat: add service package and development scripts
+    
+    - Add services package initialization
+    - Add development utility scripts
+    - Improve project structure
+
+commit 7775f88df56ff43099c0e4768fdd6ea369fab9dc
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Fri Feb 28 18:43:32 2025 +0800
+
+    style: format code with black and update types
+    
+    - Format config.py with black
+    - Format ai_service.py with black
+    - Update type hints and docstrings
+    - Clean up code formatting
+
+commit 848573eb19f41d1a8b1a4bf99386948c746aeb9e
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Fri Feb 28 18:43:17 2025 +0800
+
+    build: add development dependencies
+    
+    - Add code formatting tools (black, isort)
+    - Add type checking tools (mypy)
+    - Add testing tools (pytest)
+    - Add documentation tools (mkdocs)
+
+commit 5a92049ce5325b72d793b398ad3a5a166c0bcc4f
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Fri Feb 28 18:39:36 2025 +0800
+
+    chore: general project improvements
+    
+    - Update gitignore patterns
+    - Add package docstrings
+    - Clean up imports
+    - Add return type hints to endpoints
+
+commit a41563785f2d88ab0573c590cb71f43f9ca371e9
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Fri Feb 28 18:39:24 2025 +0800
+
+    feat: enhance AI service implementation
+    
+    - Add comprehensive docstrings
+    - Improve type hints
+    - Add error handling
+    - Implement HTTP client for external API calls
+    - Update API endpoint return types
+
+commit cc6e3067ddbbb9467b7a7b0a4db9862468b3d95f
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Fri Feb 28 18:39:11 2025 +0800
+
+    refactor: update Settings class implementation
+    
+    - Update to pydantic v2 syntax
+    - Improve configuration management
+    - Add type hints and validators
+    - Configure database and CORS settings
+
+commit 3d1a7dd690c53c7222ae6cd13290d54770f0c798
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Fri Feb 28 18:38:56 2025 +0800
+
+    ci: set up GitHub Actions workflow
+    
+    - Configure CI pipeline for main and develop branches
+    - Add PostgreSQL service container
+    - Set up Python testing environment
+    - Configure code quality checks
+    - Add coverage reporting
+
+commit ee9cca3132291236a40b27071737ee59fd6e247a
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Fri Feb 28 18:38:03 2025 +0800
+
+    build: configure development tools
+    
+    - Add black, isort for code formatting
+    - Add mypy for type checking
+    - Add flake8 for code style
+    - Configure pre-commit hooks
+    - Set up pytest configuration
+
+commit 1c1043ff0e75621053e34d11f8a699d08ed2a1d9
+Author: Sin-iu Ho <jb22621550@gmail.com>
+Date:   Fri Feb 28 17:27:10 2025 +0800
+
+    Initial commit
+    
+    Project structure setup:
+    - FastAPI application skeleton
+    - Configuration management
+    - AI services endpoints
+    - Project documentation

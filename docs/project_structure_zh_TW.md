@@ -29,6 +29,19 @@
 │   │   │   │   └── openai_service.py       # OpenAI 服務實作
 │   │   │   └── utils/                      # AI 功能共用工具
 │   │   │       └── logging_utils.py        # 紀錄工具
+│   │   ├── document/                       # 文件處理模組
+│   │   │   ├── __init__.py
+│   │   │   ├── document_parser_service.py
+│   │   │   ├── parser_base.py
+│   │   │   ├── parsers/
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── image_parser.py
+│   │   │   │   ├── pdf_parser.py
+│   │   │   │   └── docx_parser.py
+│   │   │   └── parser_tester/
+│   │   │       ├── parser_tester.py
+│   │   │       ├── sample_files/
+│   │   │       └── test_results/
 │   │   ├── other_services.py               # 其他業務邏輯模組
 │   │   └── __init__.py
 │   ├── tasks/                         # 非同步任務
@@ -37,6 +50,10 @@
 │   └── main.py                        # 應用程式進入點
 │
 ├── tests/                             # 單元與整合測試
+│   ├── conftest.py
+│   ├── unit/
+│   ├── integration/
+│   └── __init__.py
 ├── alembic/                           # 資料庫遷移
 ├── docs/                              # 文件檔案
 │   ├── design_proposals.md            # 設計概述與模式

@@ -1,6 +1,6 @@
 # SingSi Project Structure
 
-## Current Project Directory Layout
+## Current Directory Layout
 
 ```
 /singsi/
@@ -29,6 +29,19 @@
 │   │   │   │   └── openai_service.py       # OpenAI service implementation
 │   │   │   └── utils/                      # Shared tools for AI functionalities
 │   │   │       └── logging_utils.py        # Logging utilities
+│   │   ├── document/
+│   │   │   ├── __init__.py
+│   │   │   ├── document_parser_service.py
+│   │   │   ├── parser_base.py
+│   │   │   ├── parsers/
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── image_parser.py
+│   │   │   │   ├── pdf_parser.py
+│   │   │   │   └── docx_parser.py
+│   │   │   └── parser_tester/
+│   │   │       ├── parser_tester.py
+│   │   │       ├── sample_files/
+│   │   │       └── test_results/
 │   │   ├── other_services.py               # Other business logic modules
 │   │   └── __init__.py
 │   ├── tasks/                         # Asynchronous Tasks
@@ -37,6 +50,16 @@
 │   └── main.py                        # Application Entry Point
 │
 ├── tests/                             # Unit and Integration Tests
+│   ├── conftest.py
+│   ├── unit/
+│   │   ├── __init__.py
+│   │   ├── test_api.py                # API endpoint tests
+│   │   ├── test_services.py           # Service layer tests
+│   │   └── test_utils.py              # Utility function tests
+│   ├── integration/
+│   │   ├── __init__.py
+│   └── __init__.py
+│
 ├── alembic/                           # Database Migrations
 ├── docs/                              # Documentation Files
 │   ├── design_proposals.md            # Design Overview & Patterns
